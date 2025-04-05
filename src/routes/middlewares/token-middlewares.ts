@@ -1,5 +1,5 @@
 import { createMiddleware } from "hono/factory";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { jwtSecretKey } from "../../environment.js";
 
 export const tokenMiddleware = createMiddleware<{
@@ -8,6 +8,7 @@ export const tokenMiddleware = createMiddleware<{
   };
 }>(async (context, next) => {
   const token = context.req.header("token");
+  console.log(token)
 
   if (!token) {
     return context.json(
@@ -36,6 +37,7 @@ export const tokenMiddleware = createMiddleware<{
 
     await next();
   } catch (e) {
+    console.log("I am here")
     return context.json(
       {
         message: "Missing Token",
