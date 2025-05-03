@@ -1,22 +1,22 @@
-// {
-//     "extends": "./tsconfig.json",
-//     "compilerOptions": {
-//       "noEmit": false,
-//       "outDir": "./dist",
-//       "module": "ESNext",
-//       "target": "ES2020",
-//       "allowImportingTsExtensions": false
-//     },
-//     "include": ["src"]
-//   }
-
 {
-  "compilerOptions": {
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "strict": true,
     "outDir": "./dist"
   },
-  "include": ["src"]
-}
+    "include": ["src"]
+  }
+
+// {
+//   "compilerOptions": {
+//     "module": "NodeNext",
+//     "moduleResolution": "NodeNext",
+//     "esModuleInterop": true,
+//     "strict": true,
+//     "outDir": "./dist"
+//   },
+//   "include": ["src"]
+// }
