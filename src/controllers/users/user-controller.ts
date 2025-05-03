@@ -1,4 +1,3 @@
-import type { User } from "@prisma/client";
 import { prismaClient } from "../../extras/prisma.js";
 import {
   GetMeError,
@@ -14,6 +13,17 @@ export const getMe = async (parameters: {
     where: {
       id: parameters.userId,
     },
+    select: {
+      id: true,
+      username: true,
+      displayUsername: true,
+      name: true,
+      createdAt: true,
+      updatedAt: true,
+      email: true,
+      emailVerified: true,
+      image: true,
+    }
   });
 
   if (!user) {
@@ -46,4 +56,21 @@ export const getAllUsers = async (
     users,
     total: totalUsers,
   };
+};
+
+export const getUserById = async (userId: string) => {
+  const user = await prismaClient.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      username: true,
+      createdAt: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("USER_NOT_FOUND");
+  }
+
+  return user;
 };

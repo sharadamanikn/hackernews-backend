@@ -3,63 +3,51 @@ import { LikePostError, GetLikePostError, DeleteLikeError, } from "./like-type.j
 export const likePost = async (parameters) => {
     const { userId, postId } = parameters;
     const existuser = await prismaClient.user.findUnique({
-        where: {
-            id: userId,
-        },
+        where: { id: userId },
+        select: {
+            id: true,
+        }
     });
     if (!existuser)
         throw LikePostError.UNAUTHORIZED;
-    const post = await prismaClient.post.findUnique({
-        where: {
-            id: postId,
-        },
-    });
+    const post = await prismaClient.post.findUnique({ where: { id: postId } });
     if (!post)
         throw LikePostError.NOT_FOUND;
     const alreadyliked = await prismaClient.like.findFirst({
-        where: {
-            userId,
-            postId,
-        },
+        where: { userId, postId },
     });
     if (alreadyliked)
         throw LikePostError.ALREADY_LIKED;
-    const result = await prismaClient.like.create({
-        data: {
-            userId,
-            postId,
-        },
-    });
-    return {
-        like: result,
-    };
+    try {
+        const like = await prismaClient.like.create({
+            data: {
+                userId,
+                postId
+            },
+        });
+        return { like };
+    }
+    catch (error) {
+        console.error("Error creating like:", error);
+        throw LikePostError;
+    }
 };
 export const getLikePosts = async (parameters) => {
-    const user = await prismaClient.user.findUnique({
-        where: {
-            id: parameters.userId,
-        },
-    });
-    if (!user) {
+    const user = await prismaClient.user.findUnique({ where: { id: parameters.userId }, select: {
+            id: true,
+        } });
+    if (!user)
         throw GetLikePostError.UNAUTHORIZED;
-    }
-    const likes = await prismaClient.like.findMany({
+    const total = await prismaClient.like.count({ where: { postId: parameters.postId } });
+    const alreadyLiked = !!(await prismaClient.like.findFirst({
         where: {
+            userId: parameters.userId,
             postId: parameters.postId,
         },
-        orderBy: {
-            createdAt: "asc",
-        },
-        skip: (parameters.page - 1) * parameters.limit,
-        take: parameters.limit,
-    });
-    if (!likes) {
-        throw GetLikePostError.BAD_REQUEST;
-    }
-    const totallikes = await prismaClient.like.count();
+    }));
     return {
-        likes,
-        total: totallikes,
+        total,
+        alreadyLiked,
     };
 };
 export const deleteLikes = async (parameters) => {
@@ -67,6 +55,9 @@ export const deleteLikes = async (parameters) => {
         where: {
             id: parameters.userId,
         },
+        select: {
+            id: true,
+        }
     });
     if (!user) {
         throw DeleteLikeError.UNAUTHORIZED;

@@ -1,4 +1,4 @@
-import type { Comment } from "@prisma/client";
+import type { Comment } from "../../generated/prisma/index.js";
 
 export enum CommentPostError {
   NOT_FOUND,

@@ -1,14 +1,14 @@
 import { Hono } from "hono";
-import { tokenMiddleware } from "./middlewares/token-middlewares.js";
 import { likePost, getLikePosts, deleteLikes, } from "../controllers/likes/like-controller.js";
 import { LikePostError, GetLikePostError, DeleteLikeError, } from "../controllers/likes/like-type.js";
+import { sessionMiddleware } from "./middlewares/session-middleware.js";
 export const likeRoutes = new Hono();
-likeRoutes.post("/on/:postId", tokenMiddleware, async (context) => {
-    const userId = context.get("userId");
+likeRoutes.post("/on/:postId", sessionMiddleware, async (context) => {
+    const user = context.get("user");
     const postId = await context.req.param("postId");
     try {
         const result = await likePost({
-            userId,
+            userId: user.id,
             postId,
         });
         return context.json(result, 200);
@@ -34,46 +34,25 @@ likeRoutes.post("/on/:postId", tokenMiddleware, async (context) => {
         }, 500);
     }
 });
-likeRoutes.get("/on/:postId", tokenMiddleware, async (context) => {
-    const userId = context.get("userId");
-    const page = Number(context.req.query("page") || 1);
-    const limit = Number(context.req.query("limit") || 10);
+likeRoutes.get("/on/:postId", sessionMiddleware, async (context) => {
+    const user = context.get("user");
     const postId = await context.req.param("postId");
     try {
         const result = await getLikePosts({
-            userId,
+            userId: user.id,
             postId,
-            page,
-            limit,
         });
-        return context.json({
-            data: result.likes,
-            pagination: {
-                page,
-                limit,
-                total: result.total,
-                totalPages: Math.ceil(result.total / limit),
-            },
-        }, 200);
+        return context.json(result, 200);
     }
     catch (e) {
         if (e === GetLikePostError.UNAUTHORIZED) {
-            return context.json({
-                message: "User with the given token is not present",
-            }, 400);
+            return context.json({ message: "User unauthorized" }, 400);
         }
-        if (e === GetLikePostError.BAD_REQUEST) {
-            return context.json({
-                error: "There is no likes for this post",
-            }, 400);
-        }
-        return context.json({
-            message: "Internal Server Error",
-        }, 500);
+        return context.json({ message: "Internal Server Error" }, 500);
     }
 });
-likeRoutes.delete("/deletelike/:postId", tokenMiddleware, async (context) => {
-    const userId = context.get("userId");
+likeRoutes.delete("/deletelike/:postId", sessionMiddleware, async (context) => {
+    const userId = context.get("user").id;
     const postId = String(await context.req.param("postId"));
     try {
         const response = await deleteLikes({

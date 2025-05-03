@@ -1,13 +1,14 @@
-import { Hono } from "hono";
 import { logInWithUsernameAndPassword, SignInWithUsernameAndPassword, } from "../controllers/authentication/authentication-controller.js";
 import { LogInWtihUsernameAndPasswordError, SignInWithUsernameAndPasswordError, } from "../controllers/authentication/authentication-types.js";
+import { Hono } from 'hono';
 export const authenticationroutes = new Hono();
 authenticationroutes.post("/sign-in", async (context) => {
     try {
-        const { username, password } = await context.req.json();
+        const { username, password, email } = await context.req.json();
         const user = await SignInWithUsernameAndPassword({
             username,
             password,
+            email
         });
         return context.json({
             data: user,
