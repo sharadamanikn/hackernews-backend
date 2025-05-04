@@ -1,8 +1,4 @@
 import { Hono } from "hono";
-<<<<<<< HEAD
-=======
-
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
 import {
   likePost,
   getLikePosts,
@@ -17,11 +13,7 @@ import { sessionMiddleware } from "./middlewares/session-middleware.js";
 
 export const likeRoutes = new Hono();
 
-<<<<<<< HEAD
 //old likePost function
-=======
-
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
 likeRoutes.post("/on/:postId", sessionMiddleware, async (context) => {
   const user = context.get("user");
   const postId = await context.req.param("postId");
@@ -66,7 +58,6 @@ likeRoutes.post("/on/:postId", sessionMiddleware, async (context) => {
   }
 });
 
-<<<<<<< HEAD
 // likeRoutes.get("/on/:postId", sessionMiddleware, async (context) => {
 //   const user = context.get("user");
 //   const page = Number(context.req.query("page") || 1);
@@ -119,9 +110,6 @@ likeRoutes.post("/on/:postId", sessionMiddleware, async (context) => {
 //     );
 //   }
 // });
-=======
-
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
 likeRoutes.get("/on/:postId", sessionMiddleware, async (context) => {
   const user = context.get("user");
   const postId = await context.req.param("postId");
