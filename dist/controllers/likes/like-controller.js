@@ -122,6 +122,9 @@ export const deleteLikes = async (parameters) => {
         where: {
             id: parameters.userId,
         },
+        select: {
+            id: true,
+        }
     });
     if (!user) {
         throw DeleteLikeError.UNAUTHORIZED;

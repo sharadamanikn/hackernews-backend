@@ -23,6 +23,10 @@ allroutes.get("/health", async (context) => {
   );
 });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
 allroutes.route("/api/auth", authRoute);
 allroutes.route("/users", usersRoutes);
 allroutes.route("/posts", postRoutes);

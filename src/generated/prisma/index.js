@@ -199,7 +199,11 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
+<<<<<<< HEAD
       "value": "C:\\Users\\USER\\OneDrive\\Desktop\\u-server\\src\\generated\\prisma",
+=======
+      "value": "D:\\Developer\\hackernews\\src\\generated\\prisma",
+>>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
       "fromEnvVar": null
     },
     "config": {
@@ -213,11 +217,19 @@ const config = {
       }
     ],
     "previewFeatures": [],
+<<<<<<< HEAD
     "sourceFilePath": "C:\\Users\\USER\\OneDrive\\Desktop\\u-server\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
     "rootEnvPath": null,
+=======
+    "sourceFilePath": "D:\\Developer\\hackernews\\prisma\\schema.prisma",
+    "isCustomOutput": true
+  },
+  "relativeEnvPaths": {
+    "rootEnvPath": "../../../.env",
+>>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma",
@@ -227,11 +239,19 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+<<<<<<< HEAD
+=======
+  "postinstall": false,
+>>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
+<<<<<<< HEAD
         "value": "postgresql://postgres.kbdpunqljozzvkqulnuo:fnbkjfnjknrjngrnkjnfkjhnfjknhjfnhnohfnkjhnf@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+=======
+        "value": null
+>>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
       }
     }
   },

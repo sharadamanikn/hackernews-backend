@@ -7,6 +7,7 @@ import {
   DeleteLikeError,
 } from "./like-type.js";
 
+<<<<<<< HEAD
 // export const likePost = async (parameters: {
 //   userId: string;
 //   postId: string;
@@ -85,6 +86,9 @@ import {
 //     total: totallikes,
 //   };
 // };
+=======
+
+>>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
 export const likePost = async (parameters: {
   userId: string;
   postId: string;
@@ -156,6 +160,9 @@ export const deleteLikes = async (parameters: {
     where: {
       id: parameters.userId,
     },
+    select:{
+      id:true,
+    }
   });
 
   if (!user) {

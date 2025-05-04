@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "extends": "./tsconfig.json",
   "compilerOptions": {
   "module": "NodeNext",
@@ -9,3 +10,26 @@
 },
   "include": ["src"]
 }
+=======
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "strict": true,
+    "outDir": "./dist"
+  },
+    "include": ["src"]
+  }
+
+// {
+//   "compilerOptions": {
+//     "module": "NodeNext",
+//     "moduleResolution": "NodeNext",
+//     "esModuleInterop": true,
+//     "strict": true,
+//     "outDir": "./dist"
+//   },
+//   "include": ["src"]
+// }
+>>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
