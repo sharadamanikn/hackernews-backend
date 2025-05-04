@@ -7,7 +7,7 @@ on:
 
 env:
   AZURE_REGION: centralindia
-  RESOURCE_GROUP: HackerNews
+  RESOURCE_GROUP: Hackernewss
   CONTAINER_APPS_ENVIRONMENT: HackerNewsContainerAppsEnvironment
   LOG_ANALYTICS_WORKSPACE: HackerNewsLogAnalyticsWorkspace
   ACR_REGISTRY: hackernews1si21is046.azurecr.io # This has to be unique (at least the `erbium` bit)
