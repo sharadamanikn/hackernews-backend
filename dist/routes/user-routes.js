@@ -1,10 +1,11 @@
 import { Hono } from "hono";
-import { tokenMiddleware } from "./middlewares/token-middlewares.js";
+import { prismaClient } from "../extras/prisma.js";
 import { getAllUsers, getMe } from "../controllers/users/user-controller.js";
 import { GetMeError } from "../controllers/users/user-types.js";
+import { sessionMiddleware } from "./middlewares/session-middleware.js";
 export const usersRoutes = new Hono();
-usersRoutes.get("/me", tokenMiddleware, async (context) => {
-    const userId = context.get("userId");
+usersRoutes.get("/me", sessionMiddleware, async (context) => {
+    const userId = context.get("user").id;
     try {
         const user = await getMe({
             userId,
@@ -24,7 +25,7 @@ usersRoutes.get("/me", tokenMiddleware, async (context) => {
         }, 500);
     }
 });
-usersRoutes.get("/getAllusers", tokenMiddleware, async (context) => {
+usersRoutes.get("/getAllusers", sessionMiddleware, async (context) => {
     const page = Number(context.req.query("page") || 1);
     const limit = Number(context.req.query("limit") || 10);
     try {

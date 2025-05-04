@@ -1,10 +1,12 @@
 import { Hono } from "hono";
-import { tokenMiddleware } from "./middlewares/token-middlewares.js";
+import { sessionMiddleware } from "./middlewares/session-middleware.js";
 import {
   createPost,
   getAllPosts,
   getMePost,
   deletePost,
+  getPostById,
+  getPastPosts,
 } from "../controllers/posts/post-controller.js";
 import {
   CreatePostError,
@@ -15,49 +17,28 @@ import {
 
 export const postRoutes = new Hono();
 
-postRoutes.post("/create-post", tokenMiddleware, async (context) => {
-  const userId = await context.get("userId");
+postRoutes.post("/create-post", sessionMiddleware, async (context) => {
+  const user = context.get("user");
   const input = await context.req.json();
 
   try {
     const result = await createPost({
-      userId,
+      userId: user.id,
       input,
     });
-    return context.json(
-      {
-        data: result,
-      },
-      200
-    );
+    return context.json({ data: result }, 200);
   } catch (e) {
     if (e === CreatePostError.BAD_REQUEST) {
-      return context.json(
-        {
-          message: "Title and content are required",
-        },
-        400
-      );
+      return context.json({ message: "Title and content are required" }, 400);
     }
-
     if (e === CreatePostError.UNAUTHORIZED) {
-      return context.json(
-        {
-          message: "User is not authorized",
-        },
-        401
-      );
+      return context.json({ message: "User is not authorized" }, 401);
     }
-    return context.json(
-      {
-        message: "Internal Server Error",
-      },
-      500
-    );
+    return context.json({ message: "Internal Server Error" }, 500);
   }
 });
 
-postRoutes.get("/getAllposts", tokenMiddleware, async (context) => {
+postRoutes.get("/getAllposts", sessionMiddleware, async (context) => {
   const page = Number(context.req.query("page") || 1);
   const limit = Number(context.req.query("limit") || 10);
   try {
@@ -80,14 +61,14 @@ postRoutes.get("/getAllposts", tokenMiddleware, async (context) => {
   }
 });
 
-postRoutes.get("/meposts", tokenMiddleware, async (context) => {
-  const userId = context.get("userId");
+postRoutes.get("/meposts", sessionMiddleware, async (context) => {
+  const user = context.get("user");
   const page = Number(context.req.query("page") || 1);
   const limit = Number(context.req.query("limit") || 10);
 
   try {
     const result = await getMePost({
-      userId,
+      userId: user.id,
       page,
       limit,
     });
@@ -108,12 +89,11 @@ postRoutes.get("/meposts", tokenMiddleware, async (context) => {
     if (e === GetMePostError.BAD_REQUEST) {
       return context.json(
         {
-          error: "User with given id does not have post",
+          error: "User with given id does not have posts",
         },
         400
       );
     }
-
     return context.json(
       {
         message: "Internal Server Error",
@@ -123,40 +103,62 @@ postRoutes.get("/meposts", tokenMiddleware, async (context) => {
   }
 });
 
-postRoutes.delete("/deletepost/:postId", tokenMiddleware, async (context) => {
-  const userId = context.get("userId");
-
+postRoutes.delete("/deletepost/:postId", sessionMiddleware, async (context) => {
+  const user = context.get("user");
   const postId = String(await context.req.param("postId"));
 
   try {
     const response = await deletePost({
-      userId,
+      userId: user.id,
       postId,
     });
-
     return context.json(response, 200);
   } catch (e) {
     if (e === DeletePostError.NOT_FOUND) {
-      return context.json(
-        {
-          message: "Post is not found",
-        },
-        400
-      );
+      return context.json({ message: "Post not found" }, 404);
     }
     if (e === DeletePostError.UNAUTHORIZED) {
-      return context.json(
-        {
-          message: "User is not found",
-        },
-        400
-      );
+      return context.json({ message: "User is not authorized" }, 401);
     }
+    return context.json({ message: "Internal server error" }, 500);
+  }
+});
+
+postRoutes.get("/getpost/:postId", sessionMiddleware, async (context) => {
+  const postId = String(await context.req.param("postId"));
+
+  try {
+    const result = await getPostById(postId);
+    return context.json({ data: result }, 200);
+  } catch (e) {
+    if (e === GetPostError.BAD_REQUEST) {
+      return context.json({ message: "Post not found" }, 400);
+    }
+    return context.json({ message: "Internal Server Error" }, 500);
+  }
+});
+
+postRoutes.get("/pastposts", async (context) => {
+  const before = context.req.query("before") ?? new Date().toISOString();
+  const page = Number(context.req.query("page") || 1);
+  const limit = Number(context.req.query("limit") || 10);
+
+  try {
+    const result = await getPastPosts(before, page, limit);
     return context.json(
       {
-        message: "Internal server error",
+        data: result.posts,
+        pagination: {
+          page,
+          limit,
+          total: result.total,
+          totalPages: Math.ceil(result.total / limit),
+        },
       },
-      500
+      200
     );
+  } catch (e) {
+    console.error(e);
+    return context.json({ message: "Internal server error" }, 500);
   }
 });

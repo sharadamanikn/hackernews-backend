@@ -1,4 +1,3 @@
-import type { User } from "@prisma/client";
 import { prismaClient } from "../../extras/prisma.js";
 import {
   GetMeError,

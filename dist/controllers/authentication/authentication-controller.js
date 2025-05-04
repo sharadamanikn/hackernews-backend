@@ -46,6 +46,8 @@ export const SignInWithUsernameAndPassword = async (parameters) => {
             data: {
                 username: parameters.username,
                 password: passwordHash,
+                email: parameters.email,
+                emailVerified: false, // or provide the appropriate default value
             },
         });
         const token = await createJWToken({

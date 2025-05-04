@@ -17,7 +17,9 @@ export const createPost = async (parameters: {
 }): Promise<CreatePostResult> => {
   const { userId, input } = parameters;
 
-  if (!input.title || !input.content) throw CreatePostError.BAD_REQUEST;
+  if (!input.title || !input.content) {
+    throw CreatePostError.BAD_REQUEST;
+  }
 
   const post = await prismaClient.post.create({
     data: {
@@ -27,9 +29,7 @@ export const createPost = async (parameters: {
     },
   });
 
-  return {
-    post,
-  };
+  return { post };
 };
 
 export const getAllPosts = async (
@@ -38,13 +38,13 @@ export const getAllPosts = async (
 ): Promise<GetPostResults> => {
   const posts = await prismaClient.post.findMany({
     orderBy: {
-      createdAt: "asc",
+      createdAt: "desc",
     },
     skip: (page - 1) * limit,
     take: limit,
   });
 
-  if (!posts) {
+  if (!posts || posts.length === 0) {
     throw GetPostError.BAD_REQUEST;
   }
   const totalPosts = await prismaClient.post.count();
@@ -71,7 +71,7 @@ export const getMePost = async (parameters: {
     take: parameters.limit,
   });
 
-  if (!posts) {
+  if (!posts || posts.length === 0) {
     throw GetMePostError.BAD_REQUEST;
   }
   const totalPosts = await prismaClient.post.count();
@@ -111,6 +111,54 @@ export const deletePost = async (parameters: {
     },
   });
   return {
-    message: "Post deleted suceesfully",
+    message: "Post deleted successfully",
+  };
+};
+
+export const getPostById = async (postId: string) => {
+  const post = await prismaClient.post.findUnique({
+    where: {
+      id: postId,
+    },
+  });
+
+  if (!post) {
+    throw GetMeError.BAD_REQUEST;
+  }
+
+  return post;
+};
+
+export const getPastPosts = async (
+  before: string,
+  page: number = 1,
+  limit: number = 10
+): Promise<GetPostResults> => {
+  const beforeDate = new Date(before);
+
+  const posts = await prismaClient.post.findMany({
+    where: {
+      createdAt: {
+        lt: beforeDate,
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+
+  const totalPosts = await prismaClient.post.count({
+    where: {
+      createdAt: {
+        lt: beforeDate,
+      },
+    },
+  });
+
+  return {
+    posts,
+    total: totalPosts,
   };
 };

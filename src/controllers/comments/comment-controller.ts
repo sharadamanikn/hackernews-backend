@@ -20,6 +20,9 @@ export const commentPost = async (parameters: {
     where: {
       id: userId,
     },
+    select: {
+      id: true, 
+    },
   });
   if (!existuser) throw CommentPostError.UNAUTHORIZED;
 
@@ -53,6 +56,9 @@ export const getCommentPosts = async (parameters: {
   const user = await prismaClient.user.findUnique({
     where: {
       id: parameters.userId,
+    },
+    select:{
+      id:true,
     },
   });
 
@@ -151,5 +157,46 @@ export const updateCommentById = async (parameters: {
   });
   return {
     comment: result,
+  };
+};
+
+
+export const getAllComments = async (parameters: {
+  userId: string;
+  page: number;
+  limit: number;
+}) => {
+  const user = await prismaClient.user.findUnique({
+    where: { id: parameters.userId },
+    select: { id: true },
+  });
+
+  if (!user) {
+    throw GetCommentPostError.UNAUTHORIZED;
+  }
+
+  const comments = await prismaClient.comment.findMany({
+    orderBy: { createdAt: "desc" },
+    skip: (parameters.page - 1) * parameters.limit,
+    take: parameters.limit,
+    include: {
+      user: {
+        select: { id: true, name: true },
+      },
+      post: {
+        select: { id: true, title: true },
+      },
+    },
+  });
+
+  if (!comments || comments.length === 0) {
+    throw GetCommentPostError.BAD_REQUEST;
+  }
+
+  const total = await prismaClient.comment.count();
+
+  return {
+    comments,
+    total,
   };
 };
