@@ -35,32 +35,7 @@ export const createPost = async (parameters: {
   return { post };
 };
 
-<<<<<<< HEAD
-export const getAllPosts = async (
-  page: number = 1,
-  limit: number = 10
-): Promise<GetPostResults> => {
-  const posts = await prismaClient.post.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    skip: (page - 1) * limit,
-    take: limit,
-  });
 
-  if (!posts || posts.length === 0) {
-    throw GetPostError.BAD_REQUEST;
-  }
-  const totalPosts = await prismaClient.post.count();
-
-  return {
-    posts,
-    total: totalPosts,
-  };
-};
-=======
-
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
 
 export const getMePost = async (parameters: {
   userId: string;
@@ -78,7 +53,7 @@ export const getMePost = async (parameters: {
     take: parameters.limit,
   });
 
-  if (!posts || posts.length === 0) {
+  if (!posts) {
     throw GetMePostError.BAD_REQUEST;
   }
   const totalPosts = await prismaClient.post.count();
@@ -175,42 +150,6 @@ export const getPastPosts = async (
   });
 
   return {
-<<<<<<< HEAD
-    message: "Post deleted successfully",
-  };
-};
-
-export const getPostById = async (postId: string) => {
-  const post = await prismaClient.post.findUnique({
-    where: {
-      id: postId,
-    },
-  });
-
-  if (!post) {
-    throw GetMeError.BAD_REQUEST;
-  }
-
-  return post;
-};
-
-export const getPastPosts = async (
-  before: string,
-  page: number = 1,
-  limit: number = 10
-): Promise<GetPostResults> => {
-  const beforeDate = new Date(before);
-
-  const posts = await prismaClient.post.findMany({
-    where: {
-      createdAt: {
-        lt: beforeDate,
-      },
-    },
-    orderBy: {
-      createdAt: "asc",
-    },
-=======
     posts,
     total: totalPosts,
   };
@@ -298,33 +237,21 @@ export const searchPosts = async ({ keyword, page, limit }: SearchParams) => {
       },
     },
     orderBy: { createdAt: "desc" },
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
     skip: (page - 1) * limit,
     take: limit,
   });
 
-<<<<<<< HEAD
-  const totalPosts = await prismaClient.post.count({
-    where: {
-      createdAt: {
-        lt: beforeDate,
-=======
   const total = await prismaClient.post.count({
     where: {
       title: {
         contains: keyword,
         mode: "insensitive",
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
       },
     },
   });
 
   return {
     posts,
-<<<<<<< HEAD
-    total: totalPosts,
-=======
     total,
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
   };
 };

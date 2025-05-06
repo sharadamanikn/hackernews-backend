@@ -1,4 +1,5 @@
 import type { Post } from "../../generated/prisma/index.js";
+
 export type CreatePostInput = {
   title: string;
   content: string;
@@ -33,3 +34,9 @@ export enum DeletePostError {
   NOT_FOUND,
   UNAUTHORIZED,
 }
+
+ export type SearchParams = {
+  keyword: string;
+  page: number;
+  limit: number;
+};

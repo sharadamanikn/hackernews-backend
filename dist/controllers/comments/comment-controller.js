@@ -66,9 +66,6 @@ export const deleteComment = async (parameters) => {
         where: {
             id: parameters.userId,
         },
-        select: {
-            id: true,
-        }
     });
     if (!user) {
         throw DeleteCommentError.UNAUTHORIZED;
@@ -95,9 +92,6 @@ export const updateCommentById = async (parameters) => {
         where: {
             id: parameters.userId,
         },
-        select: {
-            id: true,
-        }
     });
     if (!user) {
         throw UpdateCommetError.UNAUTHORIZED;
@@ -152,26 +146,3 @@ export const getAllComments = async (parameters) => {
         total,
     };
 };
-<<<<<<< HEAD
-=======
-export const getCommentsByUser = async (parameters) => {
-    const comments = await prismaClient.comment.findMany({
-        where: { userId: parameters.userId },
-        orderBy: { createdAt: "desc" },
-        skip: (parameters.page - 1) * parameters.limit,
-        take: parameters.limit,
-        include: {
-            post: {
-                select: { id: true, title: true },
-            },
-        },
-    });
-    const totalComments = await prismaClient.comment.count({
-        where: { userId: parameters.userId },
-    });
-    return {
-        comments,
-        total: totalComments,
-    };
-};
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626

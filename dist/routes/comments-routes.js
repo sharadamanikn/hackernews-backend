@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-<<<<<<< HEAD
 import { commentPost, getCommentPosts, deleteComment, updateCommentById, getAllComments, } from "../controllers/comments/comment-controller.js";
 import { CommentPostError, GetCommentPostError, DeleteCommentError, UpdateCommetError, } from "../controllers/comments/comment-types.js";
 import { sessionMiddleware } from "./middlewares/session-middleware.js";
@@ -41,12 +40,6 @@ export const commentRoutes = new Hono();
 //     );
 //   }
 // });
-=======
-import { commentPost, getCommentPosts, deleteComment, updateCommentById, getAllComments, getCommentsByUser, } from "../controllers/comments/comment-controller.js";
-import { CommentPostError, GetCommentPostError, DeleteCommentError, UpdateCommetError, } from "../controllers/comments/comment-types.js";
-import { sessionMiddleware } from "./middlewares/session-middleware.js";
-export const commentRoutes = new Hono();
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
 commentRoutes.post("/on/:postId", sessionMiddleware, async (context) => {
     const user = context.get("user");
     const postId = await context.req.param("postId");
@@ -73,7 +66,6 @@ commentRoutes.post("/on/:postId", sessionMiddleware, async (context) => {
         return context.json({ message: "Internal server error" }, 500);
     }
 });
-<<<<<<< HEAD
 //old get comment function
 // commentRoutes.get("/on/:postId", tokenMiddleware, async (context) => {
 //   const userId = context.get("userId");
@@ -124,8 +116,6 @@ commentRoutes.post("/on/:postId", sessionMiddleware, async (context) => {
 //     );
 //   }
 // });
-=======
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626
 commentRoutes.get("/on/:postId", sessionMiddleware, async (context) => {
     const user = context.get("user");
     const page = Number(context.req.query("page") || 1);
@@ -248,30 +238,3 @@ commentRoutes.get("/all", sessionMiddleware, async (context) => {
         return context.json({ message: "Internal Server Error" }, 500);
     }
 });
-<<<<<<< HEAD
-=======
-commentRoutes.get("/byUser/:userId", sessionMiddleware, async (context) => {
-    const userId = context.req.param("userId");
-    const page = Number(context.req.query("page") || 1);
-    const limit = Number(context.req.query("limit") || 10);
-    try {
-        const result = await getCommentsByUser({
-            userId,
-            page,
-            limit,
-        });
-        return context.json({
-            data: result.comments,
-            pagination: {
-                page,
-                limit,
-                total: result.total,
-                totalPages: Math.ceil(result.total / limit),
-            },
-        }, 200);
-    }
-    catch (e) {
-        return context.json({ message: "Internal Server Error" }, 500);
-    }
-});
->>>>>>> 3ee32c9e115eef18f9a1288e7b4335f661275626

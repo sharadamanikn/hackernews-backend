@@ -1,4 +1,5 @@
 import type { Comment } from "../../generated/prisma/index.js";
+
 export enum CommentPostError {
   NOT_FOUND,
   UNAUTHORIZED,

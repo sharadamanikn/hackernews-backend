@@ -7,12 +7,12 @@ on:
 
 env:
   AZURE_REGION: centralindia
-  RESOURCE_GROUP: Hackernewss
+  RESOURCE_GROUP: Hackernews
   CONTAINER_APPS_ENVIRONMENT: HackerNewsContainerAppsEnvironment
   LOG_ANALYTICS_WORKSPACE: HackerNewsLogAnalyticsWorkspace
-  ACR_REGISTRY: hackernews1si21is0046.azurecr.io # This has to be unique (at least the `erbium` bit)
-  ACR_REPOSITORY_NAME: hackernewss
-  CONTAINER_APP_NAME: hackernewss
+  ACR_REGISTRY: hackernews1si21is046.azurecr.io # This has to be unique (at least the `erbium` bit)
+  ACR_REPOSITORY_NAME: hackernews
+  CONTAINER_APP_NAME: hackernews
   TARGET_PORT: 3000
 
 jobs:
@@ -155,4 +155,4 @@ jobs:
               az containerapp update \
                 --name "${{ env.CONTAINER_APP_NAME }}" \
                 --resource-group "${{ env.RESOURCE_GROUP }}" \
-                --set-env-vars JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} DATABASE_URL=${{ secrets.DATABASE_URL }} DIRECT_URL=${{secrets.DIRECT_URL}}
+                --set-env-vars JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} DATABASE_URL=${{ secrets.DATABASE_URL }} DIRECT_URL=${{secrets.DIRECT_URL}} SERVER_URL==${{secrets.SERVER_URL}} WEB_CLIENT_URL=${{secrets.WEB_CLIENT_URL}} BETTER_AUTH_SECRET=${{secrets.BETTER_AUTH_SECRET}}

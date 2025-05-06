@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+
 import {
   likePost,
   getLikePosts,
@@ -13,7 +14,7 @@ import { sessionMiddleware } from "./middlewares/session-middleware.js";
 
 export const likeRoutes = new Hono();
 
-//old likePost function
+
 likeRoutes.post("/on/:postId", sessionMiddleware, async (context) => {
   const user = context.get("user");
   const postId = await context.req.param("postId");
@@ -58,58 +59,7 @@ likeRoutes.post("/on/:postId", sessionMiddleware, async (context) => {
   }
 });
 
-// likeRoutes.get("/on/:postId", sessionMiddleware, async (context) => {
-//   const user = context.get("user");
-//   const page = Number(context.req.query("page") || 1);
-//   const limit = Number(context.req.query("limit") || 10);
-//   const postId = await context.req.param("postId");
 
-//   try {
-//     const result = await getLikePosts({
-//       userId:user.id,
-//       postId,
-//       page,
-//       limit,
-//     });
-
-//     return context.json(
-//       {
-//         data: result.likes,
-//         pagination: {
-//           page,
-//           limit,
-//           total: result.total,
-//           totalPages: Math.ceil(result.total / limit),
-//         },
-//       },
-//       200
-//     );
-//   } catch (e) {
-//     if (e === GetLikePostError.UNAUTHORIZED) {
-//       return context.json(
-//         {
-//           message: "User with the given token is not present",
-//         },
-//         400
-//       );
-//     }
-//     if (e === GetLikePostError.BAD_REQUEST) {
-//       return context.json(
-//         {
-//           error: "There is no likes for this post",
-//         },
-//         400
-//       );
-//     }
-
-//     return context.json(
-//       {
-//         message: "Internal Server Error",
-//       },
-//       500
-//     );
-//   }
-// });
 likeRoutes.get("/on/:postId", sessionMiddleware, async (context) => {
   const user = context.get("user");
   const postId = await context.req.param("postId");

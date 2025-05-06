@@ -95,6 +95,9 @@ export const deleteComment = async (parameters: {
     where: {
       id: parameters.userId,
     },
+    select:{
+      id:true,
+    }
   });
 
   if (!user) {
@@ -131,6 +134,9 @@ export const updateCommentById = async (parameters: {
     where: {
       id: parameters.userId,
     },
+    select:{
+      id:true,
+    }
   });
 
   if (!user) {
@@ -198,5 +204,32 @@ export const getAllComments = async (parameters: {
   return {
     comments,
     total,
+  };
+};
+
+export const getCommentsByUser = async (parameters: {
+  userId: string;
+  page: number;
+  limit: number;
+}) => {
+  const comments = await prismaClient.comment.findMany({
+    where: { userId: parameters.userId },
+    orderBy: { createdAt: "desc" },
+    skip: (parameters.page - 1) * parameters.limit,
+    take: parameters.limit,
+    include: {
+      post: {
+        select: { id: true, title: true },
+      },
+    },
+  });
+
+  const totalComments = await prismaClient.comment.count({
+    where: { userId: parameters.userId },
+  });
+
+  return {
+    comments,
+    total: totalComments,
   };
 };

@@ -1,6 +1,5 @@
 import { Hono } from "hono";
-import { prismaClient } from "../extras/prisma.js";
-import { getAllUsers, getMe } from "../controllers/users/user-controller.js";
+import { getAllUsers, getMe, getUserById } from "../controllers/users/user-controller.js";
 import { GetMeError } from "../controllers/users/user-types.js";
 import { sessionMiddleware } from "./middlewares/session-middleware.js";
 
@@ -59,5 +58,20 @@ usersRoutes.get("/getAllusers", sessionMiddleware, async (context) => {
     );
   } catch (e) {
     return context.json({ message: e }, 404);
+  }
+});
+
+usersRoutes.get("/:userId", sessionMiddleware, async (context) => {
+  const userId = context.req.param("userId");
+
+  try {
+    const user = await getUserById(userId);
+
+    return context.json({ data: user }, 200);
+  } catch (error) {
+    if (error === "USER_NOT_FOUND") {
+      return context.json({ error: "User not found" }, 404);
+    }
+    return context.json({ message: "Internal Server Error" }, 500);
   }
 });

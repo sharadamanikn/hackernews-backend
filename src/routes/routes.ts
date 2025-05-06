@@ -23,10 +23,10 @@ allroutes.get("/health", async (context) => {
   );
 });
 
+
 allroutes.route("/api/auth", authRoute);
 allroutes.route("/users", usersRoutes);
 allroutes.route("/posts", postRoutes);
 allroutes.route("/likes", likeRoutes);
 allroutes.route("/comments", commentRoutes);
-
 
